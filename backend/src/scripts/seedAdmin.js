@@ -29,13 +29,21 @@ const seedAdmin = async () => {
     }
 
     const existingAdmin = await User.findOne({ email: adminEmail });
-    if (existingAdmin) {
-      console.log('Admin user already exists');
-      process.exit(0);
-    }
-
+    
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(adminPassword, salt);
+
+    if (existingAdmin) {
+      existingAdmin.username = adminUsername;
+      existingAdmin.password = hashedPassword;
+      existingAdmin.role = 'admin';
+      await existingAdmin.save();
+      
+      console.log('Existing admin updated successfully');
+      console.log(`Username: ${adminUsername}`);
+      console.log(`Email: ${adminEmail}`);
+      process.exit(0);
+    }
 
     await User.create({
       username: adminUsername,
@@ -44,7 +52,7 @@ const seedAdmin = async () => {
       role: 'admin',
     });
 
-    console.log('Admin user created successfully');
+    console.log('Admin created successfully');
     console.log(`Username: ${adminUsername}`);
     console.log(`Email: ${adminEmail}`);
     process.exit(0);
