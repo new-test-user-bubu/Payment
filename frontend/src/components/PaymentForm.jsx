@@ -47,9 +47,8 @@ const PaymentForm = ({ initialData, onSubmit, loading, submitText = 'Save' }) =>
     }
   }, [initialData]);
 
-  useEffect(() => {
-    setFormData({});
-  }, [paymentType]);
+  // Removed useEffect that was clearing formData on paymentType change, 
+  // because it was conflicting with initialData population.
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -102,7 +101,13 @@ const PaymentForm = ({ initialData, onSubmit, loading, submitText = 'Save' }) =>
               key={type.value}
               type="button"
               className={`payment-type-option ${paymentType === type.value ? 'selected' : ''}`}
-              onClick={() => setPaymentType(type.value)}
+              onClick={() => {
+                if (paymentType !== type.value) {
+                  setPaymentType(type.value);
+                  setFormData({});
+                  setErrors({});
+                }
+              }}
             >
               <span className="payment-type-icon">{type.label.split(' ')[0]}</span>
               <div className="payment-type-info">
