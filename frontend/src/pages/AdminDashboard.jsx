@@ -5,6 +5,7 @@ import Loading from '../components/Loading';
 const AdminDashboard = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
   const [error, setError] = useState('');
   const [stats, setStats] = useState({ totalUsers: 0, totalPayments: 0, byType: [] });
   
@@ -34,6 +35,7 @@ const AdminDashboard = () => {
       setError(err.response?.data?.message || 'Failed to load payments');
     } finally {
       setLoading(false);
+      setInitialLoad(false);
     }
   };
 
@@ -69,7 +71,7 @@ const AdminDashboard = () => {
     { value: 'USDT', label: '₿ USDT' },
   ];
 
-  if (loading) {
+  if (initialLoad) {
     return <Loading message="Loading admin dashboard..." />;
   }
 
